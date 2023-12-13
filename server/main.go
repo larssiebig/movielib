@@ -7,11 +7,11 @@ import (
 )
 
 type Movie struct {
-	ID      int    `json:"id"`
-	Title   string `json:"title"`
-	Genre   string `json:"genre"`
-	Year    int    `json:"year"`
-	Picture string `json:"picture"`
+	ID        int    `json:"id"`
+	Title     string `json:"title"`
+	Genre     string `json:"genre"`
+	Year      string `json:"year"`
+	Favourite bool   `json:"favourite"`
 }
 
 func main() {
@@ -33,6 +33,23 @@ func main() {
 		movie.ID = len(movies) + 1
 
 		movies = append(movies, *movie)
+
+		return c.JSON(movies)
+	})
+
+	app.Patch("/api/movies/:id/fav", func(c *fiber.Ctx) error {
+		id, err := c.ParamsInt("id")
+
+		if err != nil {
+			return c.Status(401).SendString("Invalid ID")
+		}
+
+		for i, m := range movies {
+			if m.ID == id {
+				movies[i].Favourite = !m.Favourite
+				break
+			}
+		}
 
 		return c.JSON(movies)
 	})
