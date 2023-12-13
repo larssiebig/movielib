@@ -19,7 +19,7 @@ func main() {
 
 	movies := []Movie{}
 
-	app.Get("/moviestore", func(c *fiber.Ctx) error {
+	app.Get("/library", func(c *fiber.Ctx) error {
 		return c.SendString("Okay")
 	})
 
@@ -54,5 +54,9 @@ func main() {
 		return c.JSON(movies)
 	})
 
-	log.Fatal(app.Listen(":4000"))
+	app.Get("/api/movies", func(c *fiber.Ctx) error {
+		return c.JSON(movies)
+	})
+
+	log.Fatal(app.Listen(":8080"))
 }
