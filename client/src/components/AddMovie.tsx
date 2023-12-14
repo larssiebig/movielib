@@ -2,26 +2,36 @@ import { useDisclosure } from '@mantine/hooks'
 import { useForm } from '@mantine/form'
 import {Modal, TextInput, Button, Textarea} from '@mantine/core'
 import '@mantine/core/styles.css'
+import { ENDPOINT, Movie } from '../App';
+import { KeyedMutator } from 'swr';
 
-function AddMovie() {
+function AddMovie({mutate}: {mutate: KeyedMutator<Movie[]> }) {
   const [opened, { open, close }] = useDisclosure(false);
 
   const form = useForm({
     initialValues: {
         title: '',
-        genre: '',
-        year: '',
-        favourite: false
+        genre: ''
         },
 
   })
 
-  function createMovie() {
+  async function createMovie(values: {title: string, genre: string}) {
+    const updated = await fetch(`${ENDPOINT}/api/movies`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(values)
+    }).then((res) => res.json())
 
+    mutate(updated)
+    form.reset()
+    close()
   }
 
-  return <>
-  
+  return (
+    <>  
       <Modal opened={opened} onClose={close} title="Add Movie" >
           <form onSubmit={form.onSubmit(createMovie)}>
             <TextInput 
@@ -34,7 +44,7 @@ function AddMovie() {
             <Textarea
             required 
             mb={12} 
-            label="genre" 
+            label="Genre" 
             placeholder='What genre is the movie?'
             {...form.getInputProps("genre")}/>
 
@@ -44,7 +54,8 @@ function AddMovie() {
 
       <Button fullWidth mb={12} onClick={open}>Open modal</Button>
 
-  </>
+    </>
+  )
 }
 
 export default AddMovie
