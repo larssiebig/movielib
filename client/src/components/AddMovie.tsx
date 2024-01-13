@@ -1,6 +1,6 @@
 import { useDisclosure } from '@mantine/hooks'
 import { useForm } from '@mantine/form'
-import {Modal, TextInput, Button, Textarea} from '@mantine/core'
+import {Modal, TextInput, Button, Textarea, NumberInput} from '@mantine/core'
 import '@mantine/core/styles.css'
 import { ENDPOINT, Movie } from '../App';
 import { KeyedMutator } from 'swr';
@@ -11,7 +11,9 @@ function AddMovie({mutate}: {mutate: KeyedMutator<Movie[]> }) {
   const form = useForm({
     initialValues: {
         title: '',
-        genre: ''
+        genre: '',
+        year: '',
+        favourite: ''
         },
 
   })
@@ -47,6 +49,20 @@ function AddMovie({mutate}: {mutate: KeyedMutator<Movie[]> }) {
             label="Genre" 
             placeholder='What genre is the movie?'
             {...form.getInputProps("genre")}/>
+
+            <NumberInput 
+            required
+            mb={12}
+            label="Year"
+            placeholder='What year was the movie released?'
+            {...form.getInputProps("year")}/>
+
+           <Button 
+           variant="subtle" 
+           color="red"
+           size="xl" 
+           radius="xl">❤</Button>
+
 
             <Button type="submit">Submit</Button>
           </form>
